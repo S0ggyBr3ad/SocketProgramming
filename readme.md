@@ -12,6 +12,7 @@ Multithreading:
     Multithreading is used on the server side to handle concurrent requests and improve performance
 
 File Support:
+
     Text files: Up to 25MB
 
     Audio files: Up to 1 GB
@@ -19,6 +20,7 @@ File Support:
     Video files: Up to 2 GB
 
 **Contributors and Contributions**
+
 Johnson, Khalee:
 
 Mullin, Chandler:
