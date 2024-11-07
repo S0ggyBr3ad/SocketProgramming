@@ -27,6 +27,7 @@ Mullin, Chandler:
 
 Van Eggelpoel, Diego:
     -Initial Repository Configurations - November 7th, 2024
+    
     -readme.MD setup - November 7th, 2024
     
 Williams, Joseph:
