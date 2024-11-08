@@ -1,6 +1,10 @@
 **Project Overview**
 This collaborative project aims to design and implement a cloud-based file sharing system using a server-client architecture.
 
+Version: 0.0.2
+
+Last Updated: November 7th, 2024 @ 22:34 EST
+
 **Project Features**
 
 Server-Client Architecture: 
@@ -19,6 +23,12 @@ File Support:
 
     Video files: Up to 2 GB
 
+Authentication:
+    
+    Files will be protected through a username and password system
+    
+    Encryption will be used in order to remain secure
+
 **Contributors and Contributions**
 
 Johnson, Khalee:
@@ -28,6 +38,9 @@ Mullin, Chandler:
 Van Eggelpoel, Diego:
 
     -Initial Repository Configurations - November 7th, 2024
+
     -readme.MD setup - November 7th, 2024
+
+    -Implemented basic server setup (still needs fixing) - November 7th, 2024
     
 Williams, Joseph:
