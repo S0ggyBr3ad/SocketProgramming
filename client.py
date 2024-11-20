@@ -42,23 +42,28 @@ def send_file(filename):
             print(f"File '{filename}' not found.")
             return
 
+        # Send the upload command to the server
         s.send(f"upload {filename}".encode())
         response = s.recv(1024).decode()
         print(response)
 
-        if "Ready to receive file" in response:
+        if "Server is ready to receive file" in response:
+            # Open the file and send its contents
             with open(filename, "rb") as file:
-                while True:
-                    data = file.read(1024)
-                    if not data:
-                        break
+                while (data := file.read(1024)):
                     s.send(data)
-            s.send(b'FILE_END')  # Signal end of file
-            print("File upload complete.")
+
+            # Send the end of file marker
+            s.send(b'FILE_END')
+
+            # Wait for the server's confirmation message
+            response = s.recv(1024).decode()
+            print(response)  # Print the server's success or error message
         else:
             print("Server rejected the upload.")
     except Exception as e:
         print(f"Error during file upload: {e}")
+
 
 
 def receive_file(filename):
@@ -106,7 +111,7 @@ def manage_subfolder(action, path):
 def main():
     create_socket()
     host = input("Enter server IP: ")
-    port = 7777
+    port = 9999
     connect_to_server(host, port)
     authenticate()
 
