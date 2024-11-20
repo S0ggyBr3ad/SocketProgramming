@@ -28,7 +28,7 @@ File Support:
 
 Authentication:
     
-    Files will be protected through a username and password system
+    Files will be protected through a username and password system (Username: user, Password: pass)
     
     Encryption will be used in order to remain secure
 
