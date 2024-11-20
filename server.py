@@ -5,7 +5,7 @@ import hashlib
 
 # Configuration
 HOST = ""  # Bind to all available interfaces
-PORT = 7777
+PORT = 9999
 UPLOAD_DIR = "uploads"
 
 
@@ -29,6 +29,7 @@ def authenticate(conn):
 
         if username == valid_user and hashlib.sha256(password.encode()).hexdigest() == valid_password:
             conn.send("Authentication successful.\n".encode())
+            print("Authentication successful.\n")
             return True
         else:
             conn.send("Authentication failed.\n".encode())
@@ -43,6 +44,8 @@ def authenticate(conn):
 def handle_upload(conn, filename):
     try:
         filepath = os.path.join(UPLOAD_DIR, filename)
+
+        # Check if file exists and prompt user to overwrite
         if os.path.exists(filepath):
             conn.send("File already exists. Overwrite? (yes/no): ".encode())
             response = conn.recv(1024).decode().strip()
@@ -50,19 +53,26 @@ def handle_upload(conn, filename):
                 conn.send("Upload canceled.\n".encode())
                 return
 
-        conn.send("Ready to receive file.\n".encode())
+        conn.send("Server is ready to receive file.\n".encode())
 
-        # Receive file data and write to the server's file system
+        # Receive file data
         with open(filepath, "wb") as file:
             while True:
                 data = conn.recv(1024)
-                if data == b'FILE_END':  # End of file marker
+                if data.endswith(b'FILE_END'):  # Check if the marker is in this chunk
+                    file.write(data[:-8])  # Write all except 'FILE_END'
                     break
                 file.write(data)
 
-        conn.send(f"File {filename} uploaded successfully.\n".encode())
+        # Print and send success message
+        success_message = f"File '{filename}' uploaded successfully."
+        print(success_message)  # Print to server terminal
+        conn.send(f"{success_message}\n".encode())
+
     except Exception as e:
-        conn.send(f"Error during file upload: {str(e)}\n".encode())
+        error_message = f"Error during file upload: {str(e)}"
+        print(error_message)  # Print error to server terminal
+        conn.send(error_message.encode())
 
 
 # Handle file download
@@ -75,10 +85,16 @@ def handle_download(conn, filename):
                 while (data := file.read(1024)):
                     conn.send(data)
             conn.send(b'FILE_END')
+
+            # Notify server that the file is being sent
+            print(f"File '{filename}' downloaded successfully.")
         else:
             conn.send(f"File {filename} not found.\n".encode())
     except Exception as e:
-        conn.send(f"Error during file download: {str(e)}\n".encode())
+        error_message = f"Error during file download: {str(e)}"
+        print(error_message)  # Print error to server terminal
+        conn.send(error_message.encode())
+
 
 
 # Handle delete file
@@ -87,11 +103,17 @@ def handle_delete(conn, filename):
         filepath = os.path.join(UPLOAD_DIR, filename)
         if os.path.isfile(filepath):
             os.remove(filepath)
+
+            # Notify server and client that the file was deleted
+            print(f"File '{filename}' deleted successfully.")
             conn.send(f"File {filename} deleted successfully.\n".encode())
         else:
             conn.send(f"File {filename} not found.\n".encode())
     except Exception as e:
-        conn.send(f"Error deleting file: {str(e)}\n".encode())
+        error_message = f"Error deleting file: {str(e)}"
+        print(error_message)  # Print error to server terminal
+        conn.send(error_message.encode())
+
 
 
 # Handle directory listing
@@ -109,23 +131,46 @@ def handle_subfolder(conn, action, path):
     try:
         folder_path = os.path.join(UPLOAD_DIR, path)
 
+        # Handling subfolder creation
         if action == "create":
             if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-                conn.send(f"Subfolder '{path}' created successfully.\n".encode())
+                os.makedirs(folder_path)  # Create the subfolder
+                success_message = f"Subfolder '{path}' created successfully on the server."
+                print(success_message)  # Print to server terminal
+                conn.send(success_message.encode())
             else:
-                conn.send(f"Subfolder '{path}' already exists.\n".encode())
+                error_message = f"Subfolder '{path}' already exists on the server."
+                print(error_message)  # Print to server terminal
+                conn.send(error_message.encode())
 
+        # Handling subfolder deletion
         elif action == "delete":
             if os.path.exists(folder_path) and os.path.isdir(folder_path):
-                os.rmdir(folder_path)
-                conn.send(f"Subfolder '{path}' deleted successfully.\n".encode())
+                try:
+                    os.rmdir(folder_path)  # Delete the subfolder (only if it's empty)
+                    success_message = f"Subfolder '{path}' deleted successfully from the server."
+                    print(success_message)  # Print to server terminal
+                    conn.send(success_message.encode())
+                except OSError:
+                    error_message = f"Subfolder '{path}' is not empty, unable to delete."
+                    print(error_message)  # Print to server terminal
+                    conn.send(error_message.encode())
             else:
-                conn.send(f"Subfolder '{path}' does not exist or is not empty.\n".encode())
+                error_message = f"Subfolder '{path}' does not exist or is not a directory on the server."
+                print(error_message)  # Print to server terminal
+                conn.send(error_message.encode())
+
+        # If the action is neither 'create' nor 'delete'
         else:
-            conn.send("Invalid subfolder action.\n".encode())
+            invalid_action_message = "Invalid subfolder action. Please use 'create' or 'delete'."
+            print(invalid_action_message)  # Print to server terminal
+            conn.send(invalid_action_message.encode())
+
     except Exception as e:
-        conn.send(f"Error managing subfolder: {str(e)}\n".encode())
+        error_message = f"Error managing subfolder: {str(e)}"
+        print(error_message)  # Print to server terminal
+        conn.send(error_message.encode())
+
 
 
 # Handle client commands
@@ -153,7 +198,7 @@ def handle_client(conn, addr):
                 _, action, path = command.split(maxsplit=2)
                 handle_subfolder(conn, action, path)
             elif command.lower() == "quit":
-                conn.send("Goodbye.\n".encode())
+                print("Client disconnected.\n")
                 conn.close()
                 break
             else:
