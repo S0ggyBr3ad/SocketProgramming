@@ -24,10 +24,10 @@ def authenticate(conn):
         password = conn.recv(1024).decode().strip()
 
         # Simple authentication (Replace with more secure mechanisms for production)
-        valid_user = "user"
+        valid_user = hashlib.sha256("user".encode()).hexdigest()
         valid_password = hashlib.sha256("pass".encode()).hexdigest()
 
-        if username == valid_user and hashlib.sha256(password.encode()).hexdigest() == valid_password:
+        if username == valid_user and password == valid_password:
             conn.send("Authentication successful.\n".encode())
             print("Authentication successful.\n")
             return True
