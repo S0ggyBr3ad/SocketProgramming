@@ -3,7 +3,6 @@ import sys
 import os
 import hashlib
 
-
 def create_socket():
     try:
         global s
@@ -30,7 +29,8 @@ def authenticate():
 
     print(s.recv(1024).decode(), end="")
     password = input()
-    password= hashlib.sha256(password.encode()).hexdigest()
+    password = hashlib.sha256(password.encode()).hexdigest()
+
     s.send(password.encode())
 
     response = s.recv(1024).decode()
@@ -76,12 +76,14 @@ def receive_file(filename):
         with open(filename, "wb") as f:
             while True:
                 data = s.recv(1024)
-                if data == b'FILE_END':
+                if data.endswith(b'FILE_END'):  # Check for end marker
+                    f.write(data[:-8])  # Write all except 'FILE_END'
                     break
                 f.write(data)
         print(f"File {filename} downloaded successfully.")
     else:
         print(response)
+
 
 
 def delete_file(filename):
