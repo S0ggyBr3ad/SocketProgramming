@@ -1,9 +1,12 @@
 **Project Overview**
 This collaborative project aims to design and implement a cloud-based file sharing system using a server-client architecture.
 
-Version: 0.0.2
+Version: 0.0.3
 
-Last Updated: November 7th, 2024 @ 22:34 EST
+Last Updated: November 18th, 2024 @ 17:23 EST
+
+**Required Python Libraries**
+cryptography
 
 **Project Features**
 
@@ -25,7 +28,7 @@ File Support:
 
 Authentication:
     
-    Files will be protected through a username and password system
+    Files will be protected through a username and password system (Username: user, Password: pass)
     
     Encryption will be used in order to remain secure
 
