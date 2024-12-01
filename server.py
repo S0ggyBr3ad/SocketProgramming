@@ -1,36 +1,23 @@
 import socket
 import threading
 import os
-<<<<<<< HEAD
-import time
-import hashlib
 from analytics import NetworkAnalytics
 
 analytics = NetworkAnalytics()  # Initialize the analytics module
 
-=======
 import hashlib
 
 # Configuration
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
+
 HOST = ""  # Bind to all available interfaces
 PORT = 9999
 UPLOAD_DIR = "uploads"
 
-<<<<<<< HEAD
 #Ensure the upload directory exists
-=======
-
-# Ensure the upload directory exists
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
 def ensure_upload_directory():
     if not os.path.exists(UPLOAD_DIR):
         os.makedirs(UPLOAD_DIR)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
 # Handle client authentication
 def authenticate(conn):
     try:
@@ -55,14 +42,6 @@ def authenticate(conn):
         conn.send(f"Authentication error: {str(e)}\n".encode())
         return False
 
-<<<<<<< HEAD
-#Handle file upload
-def handle_upload(conn, filename):
-    try:
-        filepath = os.path.join(UPLOAD_DIR, filename)
-
-        #Check if file exists and prompt user to overwrite
-=======
 
 # Handle file upload
 def handle_upload(conn, filename):
@@ -70,7 +49,7 @@ def handle_upload(conn, filename):
         filepath = os.path.join(UPLOAD_DIR, filename)
 
         # Check if file exists and prompt user to overwrite
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
+
         if os.path.exists(filepath):
             conn.send("File already exists. Overwrite? (yes/no): ".encode())
             response = conn.recv(1024).decode().strip()
@@ -80,28 +59,22 @@ def handle_upload(conn, filename):
 
         conn.send("Server is ready to receive file.\n".encode())
 
-<<<<<<< HEAD
+
         #Receive file data
         with open(filepath, "wb") as file:
             while True:
                 data = conn.recv(1024)
-                if data.endswith(b'FILE_END'): # Check if the marker is in this chunk
-=======
-        # Receive file data
-        with open(filepath, "wb") as file:
-            while True:
-                data = conn.recv(1024)
                 if data.endswith(b'FILE_END'):  # Check if the marker is in this chunk
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
+
                     file.write(data[:-8])  # Write all except 'FILE_END'
                     break
                 file.write(data)
 
-<<<<<<< HEAD
+
         conn.send(f"File '{filename}' uploaded successfully.\n".encode())
     except Exception as e:
         conn.send(f"Error during file upload: {str(e)}\n".encode())
-=======
+
         # Print and send success message
         success_message = f"File '{filename}' uploaded successfully."
         print(success_message)  # Print to server terminal
@@ -112,7 +85,7 @@ def handle_upload(conn, filename):
         print(error_message)  # Print error to server terminal
         conn.send(error_message.encode())
 
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
+
 
 # Handle file download
 def handle_download(conn, filename):
@@ -132,11 +105,7 @@ def handle_download(conn, filename):
         print(error_message)
         conn.send(error_message.encode())
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
-# Handle delete file
+# Handle deleting a file
 def handle_delete(conn, filename):
     try:
         filepath = os.path.join(UPLOAD_DIR, filename)
@@ -153,11 +122,6 @@ def handle_delete(conn, filename):
         print(error_message)  # Print error to server terminal
         conn.send(error_message.encode())
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
 # Handle directory listing
 def handle_dir(conn):
     try:
@@ -166,7 +130,6 @@ def handle_dir(conn):
         conn.send(response.encode())
     except Exception as e:
         conn.send(f"Error listing directory: {str(e)}\n".encode())
-
 
 # Handle subfolder management
 def handle_subfolder(conn, action, path):
@@ -213,11 +176,6 @@ def handle_subfolder(conn, action, path):
         print(error_message)  # Print to server terminal
         conn.send(error_message.encode())
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
 # Handle client commands
 def handle_client(conn, addr):
     print(f"Connection established with {addr}")
@@ -253,11 +211,8 @@ def handle_client(conn, addr):
             conn.close()
             break
 
-<<<<<<< HEAD
-=======
-
 # Start the server
->>>>>>> fea8715c7bc080d14f2a5d1f8c34b0715c3152d1
+
 def start_server():
     ensure_upload_directory()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
