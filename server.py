@@ -84,17 +84,14 @@ def handle_download(conn, filename):
             with open(filepath, "rb") as file:
                 while (data := file.read(1024)):
                     conn.send(data)
-            conn.send(b'FILE_END')
-
-            # Notify server that the file is being sent
+            conn.send(b'FILE_END')  # Ensure this is sent separately
             print(f"File '{filename}' downloaded successfully.")
         else:
             conn.send(f"File {filename} not found.\n".encode())
     except Exception as e:
         error_message = f"Error during file download: {str(e)}"
-        print(error_message)  # Print error to server terminal
+        print(error_message)
         conn.send(error_message.encode())
-
 
 
 # Handle delete file
