@@ -73,7 +73,7 @@ def send_file(filename):
             file_size = os.path.getsize(filename) / 1024  # Convert to KB
             data_rate = round(file_size / transfer_time, 2) if transfer_time > 0 else 0
 
-            analytics.record_statistic("download", filename, data_rate, transfer_time)
+            analytics.record_statistic("upload", filename, data_rate, transfer_time)
         else:
             print("Server rejected the upload.")
     except Exception as e:
@@ -100,7 +100,7 @@ def receive_file(filename):
             file_size = os.path.getsize(filename) / 1024  # Convert to KB
             data_rate = round(file_size / transfer_time, 2) if transfer_time > 0 else 0
 
-            analytics.record_statistic("upload", filename, data_rate, transfer_time)
+            analytics.record_statistic("download", filename, data_rate, transfer_time)
             print(f"File {filename} downloaded successfully.")
         else:
             print(response)
