@@ -167,7 +167,7 @@ def main():
             elif command == "quit":
                 s.send(command.encode())
                 s.close()
-                analytics.record_statistics("Disconnect", 0, 0, 0)
+                analytics.record_statistic("Disconnect", 0, 0, 0)
                 break
             else:
                 s.send(command.encode())
