@@ -143,7 +143,7 @@ def manage_subfolder(action, path):
 def main():
     create_socket()
     host = input("Enter server IP: ")
-    port = 9998
+    port = 9999
     connect_to_server(host, port)
     authenticate()
 
