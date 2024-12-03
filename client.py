@@ -136,14 +136,14 @@ def manage_subfolder(action, path):
         s.send(f"subfolder {action} {path}".encode())
         response = s.recv(1024).decode()
         print(response)
-        analytics.record_statistics("Subfolder", 0, 0, 0)
+        analytics.record_statistic("Subfolder", 0, 0, 0)
     except Exception as e:
         print(f"Error managing subfolder: {e}")
 
 def main():
     create_socket()
     host = input("Enter server IP: ")
-    port = 9999
+    port = 9998
     connect_to_server(host, port)
     authenticate()
 
